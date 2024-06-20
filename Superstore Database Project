@@ -1,4 +1,4 @@
-#This Project Is an example on how to pull statistical data from a superstore.
+# This Project Is an example on how to pull statistical data from a superstore.
 
 CREATE TABLE superstore (
     item_id INTEGER PRIMARY KEY,
@@ -27,18 +27,25 @@ VALUES
     (14, 'Cutlery Set', 'Kitchen Supplies', 34.50, 40, 4.4),
     (15, 'Cozy Throw Blanket', 'Furnishings', 24.99, 100, 4.2);
 
-#For this Project, my goal was to pull basic information about items sold at this store and group them.
+# For this Project, my goal was to pull basic information about items sold at this store and group them.
 
-#Organize the products from least to most expensive, make sure the cost is alongside the product name for clarity.
-SELECT (price), item_name 
-FROM superstore
-ORDER BY (PRICE);
+# Q1: Organize the products from least to most expensive, make sure the cost is alongside the product name for clarity.
+SELECT item_name AS 'Item', price
+FROM superstore 
+ORDER BY price DESC;
 
-#Pull basic information such as the sum of all the products within the store, alongside the most expensive item and the average stock quantity.
+# Q2: Pull basic information such as the sum of all the products within the store, alongside the most expensive item and the average stock quantity.
 SELECT SUM(price), MAX(price), AVG(stock_quantity)
 FROM superstore;
 
-#Show a statistic of a certain category, for this example the "Kitchen Supplies"
+# Q3: Show a statistic of a certain category, for this example the "Kitchen Supplies"
 SELECT MAX(price), MIN(price), category
 FROM superstore
 WHERE category = 'Kitchen Supplies';
+
+
+#  Q4: Come up with an original question and try to answer it
+# Question: Is it possible to see a relationship between items that are highly rated and the quantity of stock/pricing of that item?
+SELECT item_name AS 'Item', average_rating as 'Rating', price AS 'Cost', stock_quantity as 'Stock Quantity' 
+FROM superstore
+ORDER BY average_rating DESC, price;
