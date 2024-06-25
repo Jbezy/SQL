@@ -1,0 +1,45 @@
+# For this project I downloaded data from Kaggle for Spotify.
+#I created a table to insert the data into, then performed some analytics.
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+-- Q1: Group the Artists by Popularity and Energy
+SELECT Spotifydata.artist_name, Spotifydata.popularity, Spotifydata.energy
+FROM BIT_DB.Spotifydata
+ORDER BY Spotifydata.popularity DESC, Spotifydata.energy DESC;
+
+-- Q2: What is the average level of popularity within the artists?
+SELECT AVG(Spotifydata.popularity) AS Average_Popularity
+FROM Spotifydata;
+
+-- Q3: What are the top 5 artists with the most energy?
+SELECT Spotifydata.artist_name, Spotifydata.energy
+FROM BIT_DB.Spotifydata
+ORDER BY Spotifydata.energy DESC
+LIMIT 5;
+
+-- Q4: What artists have at least 80 score on popularity, 0.30 score on liveness, and a energy of at least 0.50
+SELECT Spotifydata.artist_name, Spotifydata.popularity, Spotifydata.liveness, Spotifydata.energy
+FROM Spotifydata
+WHERE Spotifydata.popularity >= 80 AND Spotifydata.liveness >= 0.30 AND Spotifydata.energy >= 0.50
+ORDER BY popularity DESC, Liveness DESC, energy DESC
