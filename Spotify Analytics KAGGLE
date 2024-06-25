@@ -43,3 +43,18 @@ SELECT Spotifydata.artist_name, Spotifydata.popularity, Spotifydata.liveness, Sp
 FROM Spotifydata
 WHERE Spotifydata.popularity >= 80 AND Spotifydata.liveness >= 0.30 AND Spotifydata.energy >= 0.50
 ORDER BY popularity DESC, Liveness DESC, energy DESC
+
+-- Q5: Using a CTE, Calculate the average popularity for the artists. Then for every artist with an average popularity of 90 or above, Label them as a "Top Star"
+WITH PopularTable AS (
+SELECT Spotifydata.artist_name, ROUND(AVG(Spotifydata.popularity)) AS Average_Popularity
+FROM Spotifydata
+GROUP BY artist_name
+)
+SELECT Artist_name, Average_Popularity AS Average_Popularity_Rating, CASE WHEN Average_Popularity >= 90
+THEN 'Top Star'
+END AS Rating
+FROM PopularTable
+Where Average_Popularity >= 90
+ORDER BY Average_Popularity DESC;
+
+
