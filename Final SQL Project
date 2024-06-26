@@ -1,0 +1,97 @@
+# This was my final SQL project in the "Break into Tech" course for SQL. The following is an examination of a database labeled "Chinook".
+# The following data represents a digital media store with 11 tables for artists, albums, media tracks, invoices, etc. 
+
+--Q1: Show Customers (their full names, customer ID, and country) who are not in the US.
+SELECT CustomerId, FirstName, LastName, Country
+FROM chinook.Customers
+WHERE Country != 'USA';
+
+--Q2: Show only the Customers from Brazil.
+SELECT CustomerId, FirstName, Lastname, Country
+FROM chinook.Customers
+WHERE Country = 'Brazil';
+
+--Q3: Find the Invoices of customers who are from Brazil. 
+FROM chinook.customers
+LEFT JOIN chinook.invoices 
+ON customers.CustomerId = invoices.CustomerId
+WHERE invoices.BillingCountry = 'Brazil'
+ORDER BY FirstName, LastName;
+
+--Q4: Show the Employees who are Sales Agents.
+SELECT  employees.LastName, employees.Firstname, employees.Title
+From chinook.employees
+WHERE Title LIKE '%Sales%';
+
+--Q5: Find a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT invoices.BillingCountry
+FROM chinook.invoices
+Order by invoices.BillingCountry;
+
+--Q6: Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+SELECT employees.LastName, employees.Firstname, invoices.InvoiceId
+FROM chinook.employees
+LEFT JOIN chinook.customers ON customers.SupportRepId= employees.EmployeeId
+LEFT JOIN chinook.invoices ON customers.CustomerID = invoices.CustomerId
+WHERE invoices.InvoiceId IS NOT NULL;
+
+--Q7: Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+SELECT employees.LastName AS Employee_LName, employees.Firstname AS Employee_FName, customers.LastName AS Customer_LName ,customers.FirstName AS Customer_FName, invoices.Total
+FROM chinook.employees
+LEFT JOIN chinook.customers ON customers.SupportRepId= employees.EmployeeId
+LEFT JOIN chinook.invoices ON customers.CustomerID = invoices.CustomerId
+WHERE invoices.InvoiceId IS NOT NULL;
+
+--Q8: How many Invoices were there in 2009?
+SELECT COUNT(*)
+FROM CHINOOK.INVOICES
+WHERE invoices.InvoiceDate like '%2009%';
+
+--Q9: What are the total sales for 2009?
+SELECT SUM(invoices.total)
+FROM CHINOOK.INVOICES
+WHERE invoices.InvoiceDate like '%2009%';
+
+--Q10: Write a query that includes the purchased track name with each invoice line ID.
+SELECT t.Name, i.InvoiceLineId
+FROM  chinook.Invoice_items i
+LEFT JOIN chinook.Tracks t
+ON i.TrackId = t.TrackId
+ORDER BY i.InvoiceLineId;
+
+--Q11: Write a query that includes the purchased track name AND artist name with each invoice line ID.
+SELECT  artists.Name, tracks.Name, invoice_items.InvoiceLineId
+FROM chinook.tracks
+LEFT JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
+Left JOIN albums ON tracks.AlbumId = albums.AlbumId
+LEFT JOIN artists ON albums.ArtistId = artists.ArtistId
+WHERE invoice_items.InvoiceLineId IS NOT NULL
+ORDER BY artists.Name;
+
+--Q12: Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+SELECT  albums.title AS Album, tracks.Name as Track, media_types.Name as Media_Type, genres.Name AS Genre_Type
+FROM chinook.tracks
+LEFT JOIN chinook.albums ON tracks.AlbumId = albums.AlbumId
+LEFT JOIN chinook.media_types ON tracks.MediaTypeId = media_types.MediaTypeId
+LEFT JOIN chinook.genres ON tracks.GenreId = genres.GenreId
+ORDER BY Album, Track, Media_Type, Genre_Type;
+
+--Q13: Show the total sales made by each sales agent.
+SELECT employees.FirstName, employees.LastName, ROUND(SUM(invoices.Total)) as Total_Sales
+FROM chinook.employees
+LEFT JOIN chinook.customers ON employees.EmployeeId = customers.SupportRepId
+LEFT JOIN chinook.invoices ON customers.CustomerId = invoices.CustomerId
+WHERE employees.title LIKE '%Sales%'
+GROUP BY employees.FirstName
+HAVING Total_Sales IS NOT NULL;
+
+--Q14: Which sales agent made the most dollars in sales in 2009?
+SELECT employees.FirstName, employees.LastName, ROUND(SUM(invoices.Total)) as Total_Sales
+FROM chinook.employees
+LEFT JOIN chinook.customers ON employees.EmployeeId = customers.SupportRepId
+LEFT JOIN chinook.invoices ON customers.CustomerId = invoices.CustomerId
+WHERE Invoices.InvoiceDate LIKE '%2009%' AND employees.title LIKE '%Sales%'
+GROUP BY employees.FirstName
+HAVING Total_Sales IS NOT NULL
+ORDER BY Total_Sales desc
+LIMIT 1;
